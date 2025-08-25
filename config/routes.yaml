@@ -1,0 +1,5 @@
+admin:
+    resource: ../src/Controller/Admin
+    type: attribute
+    prefix: admin/discord/
+    name_prefix: discord_admin_

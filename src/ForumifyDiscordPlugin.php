@@ -16,6 +16,7 @@ class ForumifyDiscordPlugin extends AbstractForumifyPlugin
             'forumify',
             'Tightly couple your forumify instance with discord.',
             'https://forumify.net',
+            settingsRoute: 'discord_admin_settings',
         );
     }
 }

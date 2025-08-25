@@ -1,0 +1,41 @@
+{% extends '@Forumify/admin/base.html.twig' %}
+{% set botService = 'Forumify\\Discord\\Service\\BotService::' %}
+{% block body %}
+    <h1>Discord Plugin Settings</h1>
+    <p class="flex items-center gap-2">
+        <span class="text-bold">Bot status:</span>
+        {%- if status == constant(botService ~ 'STATUS_ONLINE') -%}
+            <i class="ph ph-cloud-check" style="color: green"></i>
+        {%- elseif status == constant(botService ~ 'STATUS_NOT_REGISTERED') -%}
+            <i class="ph ph-question" style="color: orange"></i>
+        {%- else -%}
+            <i class="ph ph-cloud-x" style="color: red"></i>
+        {%- endif -%}
+        <span>{{ status|capitalize|replace({ '-': ' ' }) }}</span>
+    </p>
+    <div class="mt-6">
+        {% if status == constant(botService ~ 'STATUS_NOT_REGISTERED') %}
+            <div class="box rich-text">
+                <p class="mb-4">Start by inviting the forumify bot to your Discord server using the button below. You must be an administrator on the server you want to use this bot on.</p>
+                <p class="text-center">
+                    <a class="btn-primary mb-6" href="https://discord.com/oauth2/authorize?client_id=1409471068388986942" target="_blank">
+                        <i class="ph ph-discord-logo"></i>
+                        Invite forumify bot
+                    </a>
+                </p>
+                <p>Finally, to activate the bot in your server, use the <strong>"/register"</strong> Discord command in any text channel on your server and fill in the following values:</p>
+                <ul>
+                    <li><strong>url:</strong> {{ app.request.uri|replace({ (app.request.requestUri): '' }) }}</li>
+                    <li><strong>client_id:</strong> {{ client.clientId }}</li>
+                    <li><strong>client_secret:</strong> {{ client.clientSecret }}</li>
+                </ul>
+                <p>Once completed, click the refresh button below.</p>
+                <p class="text-center">
+                    <a class="btn-outlined" href="{{ path('discord_admin_settings') }}"><i class="ph ph-arrows-clockwise"></i>Refresh</a>
+                </p>
+            </div>
+        {% else %}
+            {% include '@Forumify/admin/components/simple_form.html.twig' %}
+        {% endif %}
+    </div>
+{% endblock %}
