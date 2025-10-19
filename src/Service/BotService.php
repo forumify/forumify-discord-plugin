@@ -41,7 +41,7 @@ class BotService
     public function healthCheck(): string
     {
         try {
-            $this->getClient()->get('/healthz');
+            $this->getClient()->get('/ready');
         } catch (NoBotRegisteredException) {
             return self::STATUS_NOT_REGISTERED;
         } catch (GuzzleException) {

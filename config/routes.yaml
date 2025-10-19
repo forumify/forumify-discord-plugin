@@ -1,5 +1,11 @@
 admin:
-    resource: ../src/Controller/Admin
-    type: attribute
-    prefix: admin/discord/
-    name_prefix: discord_admin_
+  resource: ../src/Controller/Admin
+  type: attribute
+  prefix: admin/discord/
+  name_prefix: discord_admin_
+
+frontend:
+  resource: '../src/Controller/Frontend'
+  type: attribute
+  prefix: discord/
+  name_prefix: discord_

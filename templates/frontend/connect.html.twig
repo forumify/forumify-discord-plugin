@@ -1,0 +1,7 @@
+{% extends '@Forumify/frontend/base.html.twig' %}
+{% block body %}
+    <div class="box text-center">
+        <p class="mb-4">{{ 'discord.connect.prompt'|trans }}</p>
+        {{ discordIdp|idp_button }}
+    </div>
+{% endblock %}

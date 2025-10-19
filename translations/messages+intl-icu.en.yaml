@@ -1,0 +1,5 @@
+discord:
+  connect:
+    no_idp: 'No Discord identity provider configured.'
+    already_linked: 'You already have a Discord account linked.'
+    prompt: 'The administrator of this website has requested you to connect your Discord account. Please click the button below to connect your Discord account.'
