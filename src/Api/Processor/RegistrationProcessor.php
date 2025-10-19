@@ -7,7 +7,7 @@ namespace Forumify\Discord\Api\Processor;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Forumify\Core\Repository\SettingRepository;
-use Forumify\Discord\Api\Resource\Registration;
+use Forumify\Discord\Api\Resource\DiscordRegistration;
 
 class RegistrationProcessor implements ProcessorInterface
 {
@@ -21,7 +21,7 @@ class RegistrationProcessor implements ProcessorInterface
         array $uriVariables = [],
         array $context = [],
     ) {
-        if (!$data instanceof Registration) {
+        if (!$data instanceof DiscordRegistration) {
             return;
         }
 

@@ -11,17 +11,18 @@ use Forumify\Discord\Api\Processor\RegistrationProcessor;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
-    shortName: 'DiscordRegistration',
     operations: [
         new Post('/discord/register-bot', processor: RegistrationProcessor::class),
     ]
 )]
-class Registration
+class DiscordRegistration
 {
     #[ApiProperty(identifier: true)]
     public readonly int $id;
+
     #[Groups('DiscordRegistration')]
     public string $endpoint;
+
     #[Groups('DiscordRegistration')]
     public string $token;
 

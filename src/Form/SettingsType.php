@@ -39,20 +39,22 @@ class SettingsType extends AbstractType
             ])
             ->add('discord__force_connect_account', CheckboxType::class, [
                 'label' => 'Force users to connect a Discord account',
-                'help' => $hasDiscordIdp ? null : "You must have Discord added as an <a href='$idpLink'>Identity Provider</a> for this to work.",
+                'help' => $hasDiscordIdp
+                    ? null
+                    : "You must have Discord added as an <a href='$idpLink'>Identity Provider</a> for this to work.",
                 'help_html' => true,
                 'required' => false,
                 'disabled' => !$hasDiscordIdp,
             ])
-            /*
             ->add('discord__force_matching_username', CheckboxType::class, [
                 'label' => 'Sync forum display names to Discord',
-                'help' => $hasDiscordIdp ? null : "You must have Discord added as an <a href='$idpLink'>Identity Provider</a> for this to work.",
+                'help' => $hasDiscordIdp
+                    ? 'Discord bots can only modify users with roles below their own.'
+                    : "You must have Discord added as an <a href='$idpLink'>Identity Provider</a> for this to work.",
                 'help_html' => true,
                 'required' => false,
                 'disabled' => !$hasDiscordIdp,
             ])
-            */
         ;
     }
 

@@ -26,7 +26,7 @@ class CalendarEventListener
             return;
         }
 
-        $this->botService->sendToBot($event);
+        $this->botService->sendData($event);
     }
 
     private function shouldSyncCalendar(Calendar $calendar)

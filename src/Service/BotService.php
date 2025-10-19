@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Forumify\Discord\Service;
 
+use Forumify\Core\Entity\User;
 use Forumify\Core\Repository\SettingRepository;
+use Forumify\Discord\Api\Resource\UsernameChanged;
 use Forumify\Discord\Exception\NoBotRegisteredException;
 use Forumify\OAuth\Entity\OAuthClient;
+use Forumify\OAuth\Repository\IdentityProviderUserRepository;
 use Forumify\OAuth\Repository\OAuthClientRepository;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -24,10 +27,11 @@ class BotService
         private readonly SettingRepository $settingRepository,
         private readonly SerializerInterface $serializer,
         private readonly OAuthClientRepository $oAuthClientRepository,
+        private readonly IdentityProviderUserRepository $idpUserRepository,
     ) {
     }
 
-    public function sendToBot(mixed $payload): void
+    public function sendData(mixed $payload): void
     {
         try {
             $this->getClient()->post('/data', [
@@ -35,6 +39,18 @@ class BotService
             ]);
         } catch (GuzzleException) {
             // TODO: something with this
+        }
+    }
+
+    public function updateUsername(User $user): void
+    {
+        $idpUsers = $this->idpUserRepository->findByUserAndIdpType($user, 'discord');
+        foreach ($idpUsers as $idpUser) {
+            $usernameChangedDto = new UsernameChanged();
+            $usernameChangedDto->discordIdentifier = $idpUser->getExternalIdentifier();
+            $usernameChangedDto->discordUsername = $idpUser->getExternalUsername();
+            $usernameChangedDto->newUsername = $user->getDisplayName();
+            $this->sendData($usernameChangedDto);
         }
     }
 
