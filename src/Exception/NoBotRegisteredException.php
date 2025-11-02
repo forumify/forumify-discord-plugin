@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Forumify\Discord\Exception;
 
-use RuntimeException;
-
-class NoBotRegisteredException extends RuntimeException
+class NoBotRegisteredException extends DiscordBotException
 {
     public function __construct()
     {

@@ -34,8 +34,55 @@
                     <a class="btn-outlined" href="{{ path('discord_admin_settings') }}"><i class="ph ph-arrows-clockwise"></i>Refresh</a>
                 </p>
             </div>
+        {% elseif form is not null %}
+            <div class="box" {{ stimulus_controller('forumify/forumify-discord-plugin/settings_form') }}>
+                {{ form_start(form) }}
+                {{ form_row(form.discord__calendars) }}
+                <div class="alert-warning rich-text mb-4">
+                    <p>All settings below this modify server members. For this to work there are 2 prerequisites:</p>
+                    <ol>
+                        <li>The bot's role must be as high as possible in the roles list. And even then, it will most likely not be able to modify server administrators or the server owner.</li>
+                        <li>The target user must have their Discord account linked to their forumify profile through the <a href="{{ path('forumify_admin_identity_providers_list') }}">Discord identity provider</a>.</li>
+                    </ol>
+                    <p>If you want to force all of your users to link a Discord account, you can enable this setting:</p>
+                    {{ form_row(form.discord__force_connect_account) }}
+                </div>
+                {{ form_row(form.discord__force_user_in_server) }}
+                {{ form_row(form.discord__force_matching_username) }}
+                {{ form_label(form.discord__sync_roles) }}
+                <div class="ml-8 mt-2 mb-1 grid-2 gap-2">
+                    <span>forumify role</span>
+                    <span>Discord role</span>
+                </div>
+                <div
+                    {{ stimulus_target('forumify/forumify-discord-plugin/settings_form', 'roleMapping') }}
+                    data-prototype="{{ form_widget(form.discord__sync_roles.vars.prototype)|e('html_attr') }}"
+                    data-index="{{ form.discord__sync_roles|length }}"
+                >
+                    {{ form_widget(form.discord__sync_roles) }}
+                </div>
+                <button
+                    class="btn-link btn-small"
+                    type="button"
+                    {{ stimulus_action('forumify/forumify-discord-plugin/settings_form', 'addRoleMapping') }}
+                >
+                    <i class="ph ph-plus"></i>
+                    Add Role Mapping
+                </button>
+                <div class="flex justify-center items-center gap-2">
+                    <button type="submit" class="btn-primary">{{ 'save'|trans }}</button>
+                    <a href="{{ path('forumify_admin_plugin_list') }}" class="btn-outlined">{{ 'cancel'|trans }}</a>
+                </div>
+                {{ form_end(form) }}
+            </div>
         {% else %}
-            {% include '@Forumify/admin/components/simple_form.html.twig' %}
+            <div class="flex justify-center">
+                <p class="alert-error w-60 box text-center">
+                    <i class="ph-fill ph-cloud-x"></i>
+                    The bot is currently unreachable so settings can not be modified.
+                    Please try again later or contact forumify support if the issue persists.
+                </p>
+            </div>
         {% endif %}
     </div>
 {% endblock %}

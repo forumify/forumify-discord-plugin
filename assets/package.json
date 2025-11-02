@@ -1,0 +1,30 @@
+{
+    "name": "@forumify/forumify-discord-plugin",
+    "description": "Frontend assets for forumify discord plugin",
+    "version": "0.1.0",
+    "symfony": {
+        "controllers": {
+            "settings_form": {
+                "main": "dist/settings_form_controller.js",
+                "fetch": "lazy",
+                "enabled": true,
+                "autoimport": {}
+            }
+        },
+        "importmap": {
+            "@hotwired/stimulus": "^3.0.0"
+        }
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.22.0",
+        "@hotwired/stimulus": "^3.0.0",
+        "@stylistic/eslint-plugin": "^4.2.0",
+        "core-js": "^3.34.0",
+        "eslint": "^9.22.0"
+    },
+    "scripts": {
+        "lint": "eslint dist"
+    }
+}
