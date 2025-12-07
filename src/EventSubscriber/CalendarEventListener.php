@@ -29,7 +29,7 @@ class CalendarEventListener
         $this->botService->sendData($event);
     }
 
-    private function shouldSyncCalendar(Calendar $calendar)
+    private function shouldSyncCalendar(Calendar $calendar): bool
     {
         $calendarsToSync = $this->settingRepository->get('discord.calendars');
         if (empty($calendarsToSync)) {

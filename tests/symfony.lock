@@ -1,4 +1,13 @@
 {
+    "api-platform/symfony": {
+        "version": "4.2",
+        "recipe": {
+            "repo": "github.com/forumify/flex-recipes",
+            "branch": "main",
+            "version": "4.0",
+            "ref": "2f263954fa585d3d522957d26656d7127ca6bd52"
+        }
+    },
     "dama/doctrine-test-bundle": {
         "version": "8.9999999",
         "recipe": {
@@ -311,6 +320,15 @@
             "config/packages/twig.yaml",
             "templates/base.html.twig"
         ]
+    },
+    "symfony/uid": {
+        "version": "7.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.0",
+            "ref": "0df5844274d871b37fc3816c57a768ffc60a43a5"
+        }
     },
     "symfony/ux-autocomplete": {
         "version": "2.9999999",

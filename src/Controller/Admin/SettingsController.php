@@ -50,6 +50,9 @@ class SettingsController extends AbstractController
         ]);
     }
 
+    /**
+     * @param FormInterface<array<string, mixed>> $form
+     */
     private function handleSaveSettings(FormInterface $form): void
     {
         $oldSyncUsername = $this->settingRepository->get('discord.force_matching_username');

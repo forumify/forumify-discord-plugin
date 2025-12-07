@@ -1,0 +1,14 @@
+{% extends '@Forumify/frontend/base.html.twig' %}
+{% block body %}
+    <div class="box text-center">
+        <p class="mb-4">{{ 'discord.join.prompt'|trans }}</p>
+        {% if inviteLink is null %}
+            <p class="alert-error">{{ 'discord.join.no_invite'|trans }}</p>
+        {% else %}
+            <a class="btn-idp-discord" href="{{ inviteLink }}">
+                <i class="ph-fill ph-discord-logo"></i>
+                {{ 'discord.join.btn'|trans }}
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}

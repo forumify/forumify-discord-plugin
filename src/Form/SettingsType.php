@@ -14,17 +14,21 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * @extends AbstractType<array<string, mixed>>
+ */
 class SettingsType extends AbstractType
 {
     public function __construct(
-        private readonly CalendarRepository $calendarRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly IdentityProviderRepository $idpRepository,
         private readonly RoleRepository $roleRepository,
         private readonly BotService $botService,
+        private readonly ?CalendarRepository $calendarRepository = null,
     ) {
     }
 
@@ -33,15 +37,25 @@ class SettingsType extends AbstractType
         $hasDiscordIdp = $this->idpRepository->count(['type' => DiscordIdp::getType()]) > 0;
         $idpLink = $this->urlGenerator->generate('forumify_admin_identity_providers_list');
 
-        $builder
-            ->add('discord__calendars', ChoiceType::class, [
+        $builder->add('discord__invite_link', TextType::class, [
+            'label' => 'Discord Invite Link',
+            'help' => 'On Discord, next to the channel you want users to join, click the <i class="ph ph-user-plus"></i> icon. Edit the invite link, and set it to never expire, and no usage limit. Copy the link and paste it here.',
+            'help_html' => true,
+        ]);
+
+        if ($this->calendarRepository !== null) {
+            $builder->add('discord__calendars', ChoiceType::class, [
                 'label' => 'Sync Calendar with Discord',
                 'help' => 'Events in these calenders will be cross-posted to Discord. Leave blank to disable this feature.',
                 'multiple' => true,
                 'autocomplete' => true,
+                'required' => false,
                 'choices' => $this->getCalendarChoices(),
                 'placeholder' => '',
-            ])
+            ]);
+        }
+
+        $builder
             ->add('discord__force_connect_account', CheckboxType::class, [
                 'label' => 'Force users to connect a Discord account',
                 'help' => !$hasDiscordIdp
@@ -109,6 +123,9 @@ class SettingsType extends AbstractType
         }
     }
 
+    /**
+     * @return array<string, int>
+     */
     private function getCalendarChoices(): array
     {
         $choices = ['All Calendars' => '*'];

@@ -5,14 +5,8 @@
     "keywords": ["symfony-ux"],
     "license": "OSL-3.0",
     "require": {
-        "forumify/forumify-platform": "1.0.x-dev"
+        "forumify/forumify-platform": "^1.0.x-dev"
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../forumify-platform"
-        }
-    ],
     "require-dev": {
         "phpstan/phpstan": "^2.1",
         "squizlabs/php_codesniffer": "^3.13",

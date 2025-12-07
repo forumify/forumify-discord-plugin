@@ -51,6 +51,9 @@ class BotService
     }
 
     /**
+     * @param array<string, mixed> $args
+     * @return array<mixed>
+     *
      * @throws DiscordBotException
      */
     public function fetchData(string $type, array $args = []): array

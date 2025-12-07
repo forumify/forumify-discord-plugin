@@ -9,6 +9,9 @@ use ApiPlatform\State\ProcessorInterface;
 use Forumify\Core\Repository\SettingRepository;
 use Forumify\Discord\Api\Resource\DiscordRegistration;
 
+/**
+ * @implements ProcessorInterface<DiscordRegistration, void>
+ */
 class RegistrationProcessor implements ProcessorInterface
 {
     public function __construct(private readonly SettingRepository $settingRepository)
@@ -21,10 +24,6 @@ class RegistrationProcessor implements ProcessorInterface
         array $uriVariables = [],
         array $context = [],
     ) {
-        if (!$data instanceof DiscordRegistration) {
-            return;
-        }
-
         $this->settingRepository->setBulk([
             'discord.endpoint' => $data->endpoint,
             'discord.token' => $data->token,

@@ -44,6 +44,7 @@ class ForceDiscordLoginListener
         if ($requestRoute === null
             || $requestRoute === 'ux_live_component'
             || str_starts_with($requestRoute, 'discord_')
+            || str_starts_with($requestRoute, 'forumify_admin_')
             || str_starts_with($requestRoute, 'forumify_core_')
             || str_starts_with($requestRoute, 'forumify_oauth_idp_')
         ) {
@@ -72,7 +73,7 @@ class ForceDiscordLoginListener
 
         $response = null;
         if ($forceConnect) {
-            $response ??= $this->forceConnect($idpUsers);
+            $response = $this->forceConnect($idpUsers);
         }
 
         if ($forceInServer) {

@@ -8,10 +8,8 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\PersistentCollection;
 use Forumify\Core\Entity\Role;
 use Forumify\Core\Entity\User;
-use Forumify\Core\Repository\SettingRepository;
 use Forumify\Discord\Service\BotService;
 
 #[AsDoctrineListener(event: Events::onFlush)]
@@ -30,7 +28,6 @@ class UpdateUserListener
     private array $rolesChanged = [];
 
     public function __construct(
-        private readonly SettingRepository $settingRepository,
         private readonly BotService $botService,
     ) {
     }
@@ -53,7 +50,7 @@ class UpdateUserListener
         }
 
         foreach ($uow->getScheduledCollectionUpdates() as $collection) {
-            if (!$collection instanceof PersistentCollection || $collection->getTypeClass()->name !== Role::class) {
+            if ($collection->getTypeClass()->name !== Role::class) {
                 continue;
             }
 
