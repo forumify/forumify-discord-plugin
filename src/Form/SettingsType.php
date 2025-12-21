@@ -118,6 +118,7 @@ class SettingsType extends AbstractType
                 'required' => false,
                 'label' => 'Sync Roles',
                 'help' => "You must have Discord added as an <a href='$idpLink'>Identity Provider</a> for this to work.",
+                'help_html' => true,
                 'disabled' => true,
             ]);
         }
