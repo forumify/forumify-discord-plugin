@@ -25,7 +25,7 @@
                 </p>
                 <p>Finally, to activate the bot in your server, use the <strong>"/register"</strong> Discord command in any text channel on your server and fill in the following values:</p>
                 <ul>
-                    <li><strong>url:</strong> {{ app.request.uri|replace({ (app.request.requestUri): '' }) }}</li>
+                    <li><strong>url:</strong> {{ app.request.uri|replace({ (app.request.requestUri): '', 'http://': 'https://' }) }}</li>
                     <li><strong>client_id:</strong> {{ client.clientId }}</li>
                     <li><strong>client_secret:</strong> {{ client.clientSecret }}</li>
                 </ul>
