@@ -11,11 +11,11 @@ use Forumify\Discord\Api\DTO\DiscordCommandResult;
 use Forumify\Discord\Api\DTO\DiscordCommandOption;
 use Forumify\Discord\Api\DTO\DiscordEmbed;
 use Forumify\Discord\Discord\DiscordCommandInterface;
+use Forumify\Discord\Service\BadgeImageComposer;
 use Forumify\Forum\Repository\CommentRepository;
 use Forumify\Forum\Repository\SubscriptionRepository;
 use Forumify\Forum\Repository\TopicRepository;
 use Forumify\Forum\Service\UserReputationService;
-use RuntimeException;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -32,6 +32,7 @@ class ForumProfileCommand implements DiscordCommandInterface
         private readonly SubscriptionRepository $subscriptionRepository,
         private readonly UserReputationService $userRepouitationService,
         private readonly CoreRuntime $coreRuntime,
+        private readonly BadgeImageComposer $badgeImageComposer,
     ) {
     }
 
@@ -91,7 +92,12 @@ class ForumProfileCommand implements DiscordCommandInterface
                 : 'never',
         ));
 
-        // TODO: add badge images?
+        $badges = $user->getBadges()->slice(0, 6);
+        if (!empty($badges)) {
+            $badgeComposite = $this->badgeImageComposer->compose($badges);
+            $badgeUrl = $this->packages->getUrl($badgeComposite, 'forumify.asset');
+            $embed->setImage($this->urlHelper->getAbsoluteUrl($badgeUrl));
+        }
 
         $result->embeds[] = $embed;
         return $result;

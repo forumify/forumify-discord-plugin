@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Forumify\Discord\Api\Provider\DiscordCommandProvider;
+use Forumify\Discord\Api\DTO\DiscordCommandOption;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
