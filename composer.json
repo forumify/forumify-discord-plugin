@@ -5,7 +5,7 @@
     "keywords": ["symfony-ux"],
     "license": "OSL-3.0",
     "require": {
-        "forumify/forumify-platform": "^1.0"
+        "forumify/forumify-platform": "1.2.x-dev"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
@@ -25,6 +25,19 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
+    "repositories": [{
+        "name": "forumify-platform",
+        "type": "path",
+        "url": "../forumify-platform"
+    }, {
+        "name": "forumify-discord-plugin",
+        "type": "path",
+        "url": "../forumify-discord-plugin"
+    }, {
+        "name": "forumify-retro-theme",
+        "type": "path",
+        "url": "../forumify-retro-theme"
+    }],
     "extra": {
         "forumify-plugin-class": "Forumify\\Discord\\ForumifyDiscordPlugin",
         "branch-alias": {
