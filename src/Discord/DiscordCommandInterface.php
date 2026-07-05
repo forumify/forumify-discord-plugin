@@ -7,6 +7,7 @@ namespace Forumify\Discord\Discord;
 use Forumify\Discord\Api\DTO\DiscordCommandResult;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Forumify\Discord\Api\DTO\DiscordCommandOption;
+use Forumify\Discord\Api\Resource\DiscordCommandRun;
 
 #[AutoconfigureTag('discord.command')]
 interface DiscordCommandInterface
@@ -20,8 +21,5 @@ interface DiscordCommandInterface
      */
     public function getOptions(): array;
 
-    /**
-     * @param array<string, mixed> $options
-     */
-    public function run(array $options): DiscordCommandResult;
+    public function run(DiscordCommandRun $command): DiscordCommandResult;
 }

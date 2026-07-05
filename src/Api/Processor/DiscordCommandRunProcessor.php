@@ -38,7 +38,7 @@ class DiscordCommandRunProcessor implements ProcessorInterface
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
     {
         $command = $this->getCommand($data->name);
-        $result = $command->run($data->options);
+        $result = $command->run($data);
 
         foreach ($result->embeds as $embed) {
             $this->decorateEmbed($embed);

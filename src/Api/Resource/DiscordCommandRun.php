@@ -25,4 +25,7 @@ class DiscordCommandRun
     /** @var array<string, mixed> */
     #[Groups('DiscordCommandRun')]
     public array $options;
+
+    #[Groups('DiscordCommandRun')]
+    public string $discordUserId;
 }

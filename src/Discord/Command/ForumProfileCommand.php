@@ -10,12 +10,15 @@ use Forumify\Core\Twig\Extension\CoreRuntime;
 use Forumify\Discord\Api\DTO\DiscordCommandResult;
 use Forumify\Discord\Api\DTO\DiscordCommandOption;
 use Forumify\Discord\Api\DTO\DiscordEmbed;
+use Forumify\Discord\Api\Resource\DiscordCommandRun;
 use Forumify\Discord\Discord\DiscordCommandInterface;
 use Forumify\Discord\Service\BadgeImageComposer;
 use Forumify\Forum\Repository\CommentRepository;
 use Forumify\Forum\Repository\SubscriptionRepository;
 use Forumify\Forum\Repository\TopicRepository;
 use Forumify\Forum\Service\UserReputationService;
+use Forumify\OAuth\Idp\DiscordIdp;
+use Forumify\OAuth\Repository\IdentityProviderUserRepository;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -33,6 +36,7 @@ class ForumProfileCommand implements DiscordCommandInterface
         private readonly UserReputationService $userRepouitationService,
         private readonly CoreRuntime $coreRuntime,
         private readonly BadgeImageComposer $badgeImageComposer,
+        private readonly IdentityProviderUserRepository $idpUserRepository,
     ) {
     }
 
@@ -55,13 +59,13 @@ class ForumProfileCommand implements DiscordCommandInterface
         ];
     }
 
-    public function run(array $options): DiscordCommandResult
+    public function run(DiscordCommandRun $command): DiscordCommandResult
     {
         $result = new DiscordCommandResult();
 
-        $user = $this->getUserFromOptions($options);
+        $user = $this->getUserFromCmd($command);
         if ($user === null) {
-            $result->content = 'User not found.';
+            $result->content = "We could not find your forum profile :cry:. Try coupling your Discord account in your forum account settings, or log in to your forum account using Discord at least once.\n\nIf your forum does not support log in by Discord, provide the `username` option to the command.";
             return $result;
         }
 
@@ -88,7 +92,7 @@ class ForumProfileCommand implements DiscordCommandInterface
             $user->getDisplayName(),
             $this->coreRuntime->formatDate($user->getCreatedAt()),
             $user->getLastActivity() !== null
-                ? $this->coreRuntime->formatDate($user->getLastActivity())
+                ? strtolower($this->coreRuntime->formatDate($user->getLastActivity()))
                 : 'never',
         ));
 
@@ -128,18 +132,16 @@ class ForumProfileCommand implements DiscordCommandInterface
         ;
     }
 
-    /**
-     * @param array<string, mixed> $options
-     */
-    private function getUserFromOptions(array $options): ?User
+    private function getUserFromCmd(DiscordCommandRun $command): ?User
     {
-        $username = $options['username'] ?? null;
+        $username = $command->options['username'] ?? null;
         if ($username !== null) {
             return $this->userRepository->findOneBy(['username' => $username]);
         }
 
-        // TODO: find user by idp
-
-        return null;
+        return $this
+            ->idpUserRepository
+            ->findOneByExternalIdAndIdpType($command->discordUserId, DiscordIdp::getType())
+            ?->getUser();
     }
 }
