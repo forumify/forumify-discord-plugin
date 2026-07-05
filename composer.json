@@ -28,15 +28,11 @@
     "repositories": [{
         "name": "forumify-platform",
         "type": "path",
-        "url": "../forumify-platform"
+        "url": "../../forumify-platform"
     }, {
-        "name": "forumify-discord-plugin",
+        "name": "plugins",
         "type": "path",
-        "url": "../forumify-discord-plugin"
-    }, {
-        "name": "forumify-retro-theme",
-        "type": "path",
-        "url": "../forumify-retro-theme"
+        "url": "../"
     }],
     "extra": {
         "forumify-plugin-class": "Forumify\\Discord\\ForumifyDiscordPlugin",
