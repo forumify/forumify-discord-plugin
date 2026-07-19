@@ -10,7 +10,7 @@ class ImageGridBuilder
 {
     private int $columns = 3;
     private int $cellWidth = 128;
-    private int $cellHeight = 128;
+    private ?int $cellHeight = 128;
     private int $padding = 16;
 
     /** @var list<array{storage: FilesystemOperator, path: string}> */
@@ -28,13 +28,13 @@ class ImageGridBuilder
         return $this;
     }
 
-    public function setCellHeight(int $height): static
+    public function setCellHeight(?int $height): static
     {
         $this->cellHeight = $height;
         return $this;
     }
 
-    public function setCellSize(int $width, int $height): static
+    public function setCellSize(int $width, ?int $height): static
     {
         $this->cellWidth = $width;
         $this->cellHeight = $height;
@@ -53,10 +53,6 @@ class ImageGridBuilder
         return $this;
     }
 
-    /**
-     * Build a webp composite image from all added images.
-     * Returns the raw webp binary, or null if no images were added.
-     */
     public function build(): ?string
     {
         if (empty($this->items)) {
@@ -65,8 +61,16 @@ class ImageGridBuilder
 
         $count = count($this->items);
         $rows = (int)ceil($count / $this->columns);
+
+        $loaded = [];
+        foreach ($this->items as $index => $item) {
+            $loaded[$index] = $this->loadImage($item['storage'], $item['path']);
+        }
+
+        $rowHeights = $this->resolveRowHeights($rows, $loaded);
+
         $canvasWidth = $this->cellWidth * $this->columns + $this->padding * ($this->columns - 1);
-        $canvasHeight = $this->cellHeight * $rows + $this->padding * max(0, $rows - 1);
+        $canvasHeight = array_sum($rowHeights) + $this->padding * max(0, $rows - 1);
 
         $canvas = imagecreatetruecolor(max(1, $canvasWidth), max(1, $canvasHeight));
         imagesavealpha($canvas, true);
@@ -77,14 +81,23 @@ class ImageGridBuilder
         }
         imagealphablending($canvas, true);
 
-        foreach ($this->items as $index => $item) {
+        $rowY = 0;
+        foreach (array_keys($this->items) as $index) {
             $col = $index % $this->columns;
             $row = (int)floor($index / $this->columns);
 
-            $x = $col * ($this->cellWidth + $this->padding);
-            $y = $row * ($this->cellHeight + $this->padding);
+            if ($col === 0) {
+                $rowY = 0;
+                for ($r = 0; $r < $row; $r++) {
+                    $rowY += $rowHeights[$r] + $this->padding;
+                }
+            }
 
-            $this->drawCell($canvas, $item['storage'], $item['path'], $x, $y);
+            $x = $col * ($this->cellWidth + $this->padding);
+            $y = $rowY;
+
+            $source = $loaded[$index];
+            $this->drawCell($canvas, $source, $x, $y, $rowHeights[$row]);
         }
 
         ob_start();
@@ -92,9 +105,42 @@ class ImageGridBuilder
         return (string)ob_get_clean();
     }
 
-    private function drawCell(\GdImage $canvas, FilesystemOperator $storage, string $path, int $x, int $y): void
+    /**
+     * @param array<int, ?\GdImage> $loaded
+     * @return array<int, int> row index => row height in pixels
+     */
+    private function resolveRowHeights(int $rows, array $loaded): array
     {
-        $source = $this->loadImage($storage, $path);
+        $rowHeights = [];
+
+        for ($row = 0; $row < $rows; $row++) {
+            if ($this->cellHeight !== null) {
+                $rowHeights[$row] = $this->cellHeight;
+                continue;
+            }
+
+            $tallest = 0;
+            for ($col = 0; $col < $this->columns; $col++) {
+                $index = $row * $this->columns + $col;
+                $source = $loaded[$index] ?? null;
+                if ($source === null) {
+                    continue;
+                }
+
+                $originalWidth = imagesx($source);
+                $originalHeight = imagesy($source);
+                $scale = $this->cellWidth / $originalWidth;
+                $tallest = max($tallest, (int)round($originalHeight * $scale));
+            }
+
+            $rowHeights[$row] = max(1, $tallest);
+        }
+
+        return $rowHeights;
+    }
+
+    private function drawCell(\GdImage $canvas, ?\GdImage $source, int $x, int $y, int $targetHeight): void
+    {
         if ($source === null) {
             return;
         }
@@ -102,17 +148,16 @@ class ImageGridBuilder
         $originalWidth = imagesx($source);
         $originalHeight = imagesy($source);
 
-        $scale = min(
-            $this->cellWidth / $originalWidth,
-            $this->cellHeight / $originalHeight,
-        );
+        $scale = $this->cellHeight !== null
+            ? min($this->cellWidth / $originalWidth, $targetHeight / $originalHeight)
+            : $this->cellWidth / $originalWidth;
 
         $newWidth = max(1, (int)round($originalWidth * $scale));
         $newHeight = max(1, (int)round($originalHeight * $scale));
 
         // Center within cell
         $offsetX = $x + (int)round(($this->cellWidth - $newWidth) / 2);
-        $offsetY = $y + (int)round(($this->cellHeight - $newHeight) / 2);
+        $offsetY = $y + (int)round(($targetHeight - $newHeight) / 2);
 
         $resized = imagecreatetruecolor($newWidth, $newHeight);
         imagesavealpha($resized, true);
