@@ -25,15 +25,6 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
-    "repositories": [{
-        "name": "forumify-platform",
-        "type": "path",
-        "url": "../../forumify-platform"
-    }, {
-        "name": "plugins",
-        "type": "path",
-        "url": "../"
-    }],
     "extra": {
         "forumify-plugin-class": "Forumify\\Discord\\ForumifyDiscordPlugin",
         "branch-alias": {
