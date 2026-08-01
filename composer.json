@@ -5,7 +5,7 @@
     "keywords": ["symfony-ux"],
     "license": "OSL-3.0",
     "require": {
-        "forumify/forumify-platform": "^1.0"
+        "forumify/forumify-platform": "^1.2"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
@@ -28,7 +28,7 @@
     "extra": {
         "forumify-plugin-class": "Forumify\\Discord\\ForumifyDiscordPlugin",
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "1.1.x-dev"
         }
     }
 }
